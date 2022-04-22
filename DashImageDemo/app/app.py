@@ -22,7 +22,9 @@ app.title = 'Dashboard'
 df1 = pd.read_pickle('pref_kpi.pkl')
 df2 = pd.read_pickle('pref_kpi_describe.pkl')
 df3 = pd.read_pickle('polity.pkl')
+df4 = pd.read_pickle('archigos.pkl')
 # Index(['country', 'year', 'democ', 'autoc', 'polity', 'polity2'], dtype='object')
+# Index(['obsid', 'ccode', 'idacr', 'leader', 'jch_country', 'ch_country','start_date', 'end_date']
 #表示候補の列名のリストを作成する(1)
 my_list_1 = df1.columns
 to_remove_1 = ['年度','地域コード','都道府県','ch_year','id_pref']
@@ -35,19 +37,12 @@ remained_list_2 = [i for i in my_list_2 if i not in to_remove_2]
 # コードの仮置き終了
 # 表示する列を定義する
 columns1 = [
-    dict(id='都道府県',name='都道府県'),
-    dict(id='2007年', name='2007年度'),
-    dict(id='2008年', name='2008年度'),
-    dict(id='2009年', name='2009年度'),
-    dict(id='2010年', name='2010年度'),
-    dict(id='2011年', name='2011年度'),
-    dict(id='2012年', name='2012年度'),
-    dict(id='2013年', name='2013年度'),
-    dict(id='2014年', name='2014年度'),
-    dict(id='2015年', name='2015年度'),
-    dict(id='2016年', name='2016年度'),
-    dict(id='2017年', name='2017年度'),
-    dict(id='2018年', name='2018年度')
+    dict(id='obsid',name='obsid'),
+    dict(id='leader', name='リーダー名'),
+    dict(id='jch_country', name='国名'),
+    dict(id='ch_country', name='国名(英語)'),
+    dict(id='start_date', name='開始日'),
+    dict(id='end_date', name='終了日')
 ]
 # データテーブルを描画する関数を定義する
 def create_dash_table(df):
@@ -55,7 +50,7 @@ def create_dash_table(df):
         data=df.to_dict('records'),
         columns=columns1,
         style_cell={'fontsize':20, 'font-family':'IPAexGothic'},
-        style_cell_conditional=[{'if':{'column_id':c},'textAlign':'left'} for c in ['都道府県']],
+        style_cell_conditional=[{'if':{'column_id':c},'textAlign':'left'} for c in ['obsid']],
         style_data={'color':'black','backgroundColor':'white'},
         style_data_conditional=[{'if':{'row_index':'odd'},'backgroundColor':'rgb(220,220,220)'}],
         style_header={'backgroundColor':'rgb(210,210,210)','color':'black','fontWeight':'bold'} )
@@ -116,9 +111,9 @@ app.layout = dbc.Container([
         dbc.Col(
             dcc.Loading(
                 children=[
-                    html.H4("都道府県の指標の一覧",style={'textDecoration':'underline'}),
+                    html.H4("世界の国別リーダーの変遷",style={'textDecoration':'underline'}),
                     html.Div(
-                        dcc.Dropdown(id='dropdown3-kpi',options=[{'label':i,'value':i} for i in remained_list_1],value='総人口'),
+                        dcc.Dropdown(id='dropdown3-country',options=[{'label':i,'value':i} for i in df4['jch_country'].unique()],value='日本国'),
                         style={'width':'30%','display':'inline-block','margin-right':10}),
                     html.Div(id='datatable-paging',children=[])
                     ],color='#000000',type='dot',fullscreen=True )))
@@ -162,11 +157,9 @@ def update_figure(inval1,inval2,inval3):
 # グラフ3（データテーブル）のコールバックと実行関数の記述
 @app.callback(
     Output('datatable-paging','children'),
-    [Input('dropdown3-kpi','value')])
+    [Input('dropdown3-country','value')])
 def update_table(inval1):
-    df502=df1.pivot(index='id_pref',columns='ch_year',values=inval1)
-    df502.reset_index(inplace=True)
-    df502=df502.assign(都道府県=df502['id_pref'].apply(lambda x: x[6:]))
+    df502=df4[df4['jch_country'] == inval1 ]
     return create_dash_table(df502)
 
 # グラフ4（国際政治グラフ）のコールバックと実行関数の記述
