@@ -1,0 +1,166 @@
+Amazon S3 から 403: Access Denied エラーが返された際の解決方法を教えてください。
+https://www.youtube.com/watch?v=hI64CFAjmig
+
+aws s3api list-buckets --query Owner.ID
+"4735e0ac18ed3dde17531a37c44814b04a02c420cf0fb881729ed9c2c885268d"
+
+aws s3api list-objects --bucket ihs.taskrecorder.dashboard --prefix pref
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "Statement1",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::606165505578:user/dx2-ono"
+            },
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::ihs.taskrecorder.dashboard/*"
+        }
+    ]
+}
+
+aws configure list
+aws sts get-caller-identity
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "Statement1",
+            "Effect": "Allow",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::ihs.taskrecorder.dashboard/*"
+            ]
+        }
+    ]
+}
+
+***REMOVED***
+***REMOVED***
+
+         "Action":[
+            "s3:PutObject",
+            "s3:PutObjectAcl",
+            "s3:GetObject",
+            "s3:GetObjectAcl",
+            "s3:DeleteObject"
+         ],
+
+vpc名：
+vpc-ffa2b998
+
+vpcエンドポイントポリシー（動作未確認）
+{
+	"Version": "2008-10-17",
+	"Id": "Policy123",
+	"Statement": [
+		{
+			"Effect": "Allow",
+			"Principal": "*",
+			"Action": [
+				"s3:PutObject",
+				"s3:PutObjectAcl",
+				"s3:GetObject",
+				"s3:GetObjectAcl",
+				"s3:DeleteObject"
+			],
+			"Resource": [
+				"arn:aws:s3:::ihs.taskrecorder.dashboard",
+				"arn:aws:s3:::ihs.taskrecorder.dashboard/*"
+			]
+		}
+	]
+}
+
+s3アクセスポイントポリシー（動作未確認）
+{
+    "Version": "2012-10-17",
+    "Statement": [
+    {
+        "Effect": "Allow",
+        "Principal": {
+            "AWS": "arn:aws:iam::606165505578:user/dx2-ono"
+        },
+		"Action": [
+			"s3:PutObject",
+			"s3:PutObjectAcl",
+			"s3:GetObject",
+			"s3:GetObjectAcl",
+			"s3:DeleteObject"
+		],
+        "Resource": "arn:aws:s3:::ihs.taskrecorder.dashboard/*"
+    }]    
+}
+
+(21Apr22)
+How to Configure Access Point Policy for Listing Objects Within a Folder
+https://stackoverflow.com/questions/68009159/how-to-configure-access-point-policy-for-listing-objects-within-a-folder
+（上記記事に基づくポリシー設定）
+（アカウントのIAMポリシー）
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "s3:*"
+            ],
+            "Resource": [
+                "arn:aws:s3:::ihs.taskrecorder.dashboard",
+                "arn:aws:s3:::ihs.taskrecorder.dashboard/*",
+                "arn:aws:s3:ap-northeast-1:606165505578:accesspoint/ihsdashboarddata",
+                "arn:aws:s3:ap-northeast-1:606165505578:accesspoint/ihsdashboarddata/*"
+            ]
+        }
+    ]
+}
+（s3バケットポリシー）
+{
+    "Version": "2008-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowAccessToIamUser",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::606165505578:user/dx2-ono"
+            },
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:::ihs.taskrecorder.dashboard",
+                "arn:aws:s3:::ihs.taskrecorder.dashboard/*"
+            ]
+        }
+    ]
+}
+（S3アクセスポイントポリシー）
+{
+    "Version": "2008-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowAccessToIamUser",
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::606165505578:user/dx2-ono"
+            },
+            "Action": "s3:*",
+            "Resource": [
+                "arn:aws:s3:ap-northeast-1:606165505578:accesspoint/ihsdashboarddata",
+                "arn:aws:s3:ap-northeast-1:606165505578:accesspoint/ihsdashboarddata/object/pref*"
+            ],
+            "Condition": {
+                "StringLike": {
+                    "s3:prefix": "pref"
+                }
+            }
+        }
+    ]
+}
+
+IAMポリシー"認識されないアクション"に関して
+https://qiita.com/a-hiroyuki/items/4b5a972f30a4f051a86c
+
+(25Apr22)
+AWS個人アカウントID
+999836102998

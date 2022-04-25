@@ -23,8 +23,8 @@ df1 = pd.read_pickle('pref_kpi.pkl')
 df2 = pd.read_pickle('pref_kpi_describe.pkl')
 df3 = pd.read_pickle('polity.pkl')
 df4 = pd.read_pickle('archigos.pkl')
-# Index(['country', 'year', 'democ', 'autoc', 'polity', 'polity2'], dtype='object')
-# Index(['obsid', 'ccode', 'idacr', 'leader', 'jch_country', 'ch_country','start_date', 'end_date']
+#Index(['obsid', 'ccode', 'idacr', 'leader', 'dbpedia.uri', 'jch_country',
+ #      'ch_country', 'start_date', 'end_date'],
 #表示候補の列名のリストを作成する(1)
 my_list_1 = df1.columns
 to_remove_1 = ['年度','地域コード','都道府県','ch_year','id_pref']
@@ -42,7 +42,8 @@ columns1 = [
     dict(id='jch_country', name='国名'),
     dict(id='ch_country', name='国名(英語)'),
     dict(id='start_date', name='開始日'),
-    dict(id='end_date', name='終了日')
+    dict(id='end_date', name='終了日'),
+    dict(id='dbpedia.uri', name='参考リンク')
 ]
 # データテーブルを描画する関数を定義する
 def create_dash_table(df):
