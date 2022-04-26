@@ -1,5 +1,0 @@
-(25Apr22)
-AWS個人アカウントID
-999836102998
-dashimage5001_dashboard
-docker tag dashimage5001_dashboard:latest 999836102998.dkr.ecr.us-east-2.amazonaws.com/dashimage5001_dashboard:latest
