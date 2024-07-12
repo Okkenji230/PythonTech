@@ -1,6 +1,7 @@
 # StreamlitによるWebアプリのデモ
+# （以下は出典）
 # https://medium.com/@kaanerdenn/streamlit-simplifying-stock-price-analysis-46502333d466
-# 起動方法は当該ファイルがあるディレクトリで下記コマンドを入力
+# 起動方法はPython動作環境下で当該ファイルがあるディレクトリで下記コマンドを入力
 # streamlit run Streamlit_demo.py
 # 終了する場合はブラウザを閉じる前に「ctrl+C」キーを入力
 
