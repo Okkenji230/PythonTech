@@ -21,7 +21,7 @@ def local_css(file_name):
 local_css("style.css")
 
 st.sidebar.subheader("""Stock Search Web App""")
-selected_stock = st.sidebar.text_input("Enter a valid stock ticker...", "GOOG")
+selected_stock = st.sidebar.text_input("Enter a valid stock ticker...", "NVDA")
 button_clicked = st.sidebar.button("GO")
 if button_clicked == "GO":
     main()
